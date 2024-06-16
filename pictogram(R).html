@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>픽토그램 맞추기</title>
+</head>
+<style>
+    html{
+        font-size: 20px;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+    body {
+        text-align: center;
+        margin-top: 50px;
+        background-color: black;
+    }
+    img {
+        width: 100px;
+        height: auto;
+        display: inline-block;
+        margin: 10px;
+        cursor: pointer;
+    }
+    .selected {
+        border: 5px solid rgb(203, 34, 34);
+        border-radius: 10px;
+    }
+    .rounded-rectangle {
+            display: inline-block;
+            text-align: center;
+            width: 650px; 
+            height: 650px; 
+            background-color: white; 
+            border-radius: 30px; 
+            box-shadow: 15px 15px 15px rgb(203, 34, 34); 
+    }
+</style>
+<body>
+    <div class="rounded-rectangle">
+        <h1 style="color: rgb(203, 34, 34);" >앞 서 나온 픽토그램 기억하기</h1>
+        <div id="imageContainer"></div>
+        <button id="button1" style="padding: 10px; border-radius: 20px; border: 5px solid black; cursor: pointer;"><h1>시작</h1></button>
+        <button id="button2" style="padding: 10px; border-radius: 20px; border: 5px solid black; cursor: pointer;"><h1>정답 확인</h1></button>
+        <div><br><h3>시작:</h3> 픽토그램이 랜덤 표출 및 재시작 </div>
+        <div><br><h3>설명:</h3> 앞 서 설명한 것과 같은 사진 고르기. </div>
+    </div>
+</body>
+<script>
+    const $button1 = document.querySelector("#button1")
+    const $button2 = document.querySelector("#button2")
+    
+
+    const realImages = [
+        "경로석.png","임산부 배려석.png","휴대폰 진동사용.png",
+        "휴대폰 사용금지.png","지하철.png","환승센터.png"
+    ]; 
+    
+   
+    const allImages = [
+        "경로석.png","기차.png","남녀.png",
+        "노약자.png","임산부 배려석.png","지하철.png",
+        "환승센터.png","휴대폰 사용금지.png","휴대폰 진동사용.png"
+    ];
+    
+    let selectedImages = []; 
+
+    function startRadomDisplay() {
+        const randomImages = allImages; 
+        randomImages.sort((x) => Math.random(x) - 0.5);  
+        const displayedImages = randomImages.slice(0, 5);
+        
+    
+        const imageContainer = document.getElementById("imageContainer");
+        imageContainer.innerHTML = '';
+        selectedImages = []; 
+
+        displayedImages.forEach((image) => {
+            const imgElement = document.createElement('img'); 
+            imgElement.src = image;
+            imgElement.addEventListener('click', selectImage); 
+            imageContainer.append(imgElement);
+            console.log(displayedImages);
+        });
+    };
+    
+    
+    function selectImage(event) {
+        const imgElement = event.target; 
+        const imageSrc = imgElement.src; 
+        //console.log(imageSrc);
+        if (selectedImages.includes(imageSrc)) {
+            selectedImages = selectedImages.filter(src => src !== imageSrc); 
+            imgElement.classList.remove('selected');
+        } else {
+            selectedImages.push(imageSrc); 
+            imgElement.classList.add('selected'); 
+        }
+        //console.log('선택된 배열: ', selectedImages); 
+    };
+    
+    function checkImages(event) {
+        if (selectedImages.some(i=>["http://127.0.0.1:5503/%EB%85%B8%EC%95%BD%EC%9E%90.png","http://127.0.0.1:5503/%EA%B8%B0%EC%B0%A8.png","http://127.0.0.1:5503/%EB%82%A8%EB%85%80.png"].includes(i))===true) {
+            alert("틀린 사진이 있습니다.")
+            }else if (selectedImages.length===0) {                                                                                       
+                alert('사진을 선택해주세요');
+                }else{
+                    alert("맞았습니다.")
+                    const imageContainer = document.getElementById("imageContainer");
+                    imageContainer.innerHTML = ''; 
+                    selectedImages = []; 
+        }            
+    };
+
+
+
+    $button1.addEventListener('click', startRadomDisplay);
+    $button2.addEventListener('click', checkImages);
+</script>
+</html>
