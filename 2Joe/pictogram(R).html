@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>픽토그램 맞추기</title>
+</head>
+<style>
+    html{
+        font-size: 20px;
+        font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    }
+    body {
+        text-align: center;
+        margin-top: 50px;
+        background-color: black;
+    }
+    img {
+        width: 100px;
+        height: auto;
+        display: inline-block;
+        margin: 10px;
+        cursor: pointer;
+    }
+    .selected {
+        border: 5px solid rgb(203, 34, 34);
+        border-radius: 10px;
+    }
+    .rounded-rectangle {
+            display: inline-block;
+            text-align: center;
+            width: 650px; /* 너비 설정 */
+            height: 650px; /* 높이 설정 */
+            background-color: white; /* 배경 색상 설정 */
+            border-radius: 30px; /* 둥근 사각형을 만들기 위한 테두리 반경 설정 */
+            box-shadow: 15px 15px 15px rgb(203, 34, 34); /* 그림자 효과 설정 */
+    }
+</style>
+<body>
+    <div class="rounded-rectangle">
+        <h1 style="color: rgb(203, 34, 34);" >앞 서 나온 픽토그램 기억하기</h1>
+        <div id="imageContainer"></div>
+        <button id="button1" style="padding: 10px; border-radius: 20px; border: 5px solid black; cursor: pointer;"><h1>시작</h1></button>
+        <button id="button2" style="padding: 10px; border-radius: 20px; border: 5px solid black; cursor: pointer;"><h1>정답 확인</h1></button>
+        <div><br><h3>시작:</h3> 픽토그램이 랜덤 표출 및 재시작 </div>
+        <div><br><h3>설명:</h3> 앞 서 설명한 것과 같은 사진 고르기. </div>
+    </div>
+</body>
+<script>
+    const $button1 = document.querySelector("#button1")
+    const $button2 = document.querySelector("#button2")
+    
+
+    const realImages = [
+        "경로석.png","임산부 배려석.png","휴대폰 진동사용.png",
+        "휴대폰 사용금지.png","지하철.png","환승센터.png"
+    ];  //정답 = 위 이미지를 고른 경우에만
+    
+    // 모든 이미지
+    const allImages = [
+        "경로석.png","기차.png","남녀.png",
+        "노약자.png","임산부 배려석.png","지하철.png",
+        "환승센터.png","휴대폰 사용금지.png","휴대폰 진동사용.png"
+    ];
+    
+    let selectedImages = []; // 선택한 이미지 소스를 저장할 배열
+
+    function startRadomDisplay() {
+        const randomImages = allImages; // 이미지 배열을 가지고 와
+        randomImages.sort((x) => Math.random(x) - 0.5); // 배열 랜덤(0.5를 빼면 ) 
+        const displayedImages = randomImages.slice(0, 5); // 첫 5개의 이미지만 선택(0,1,2,3,4)
+        
+        //재시작 시 기존 배열 삭제 및 이미지 RESET
+        const imageContainer = document.getElementById("imageContainer");
+        imageContainer.innerHTML = ''; // 이미지 초기화 !!
+        selectedImages = []; // 선택한 이미지 배열 초기화
+
+        displayedImages.forEach((image) => {
+            const imgElement = document.createElement('img'); // 새로운 사진 요소 태그
+            imgElement.src = image; // 랜덤으로 뽑은 이미지
+            imgElement.addEventListener('click', selectImage); // 클릭 이벤트 리스너 추가
+            imageContainer.append(imgElement); // 이미지 컨테이너에 이미지 추가(반환 위 imgElement)
+            console.log(displayedImages);
+        });
+    };
+    
+    //겉 테두리 설정
+    function selectImage(event) {
+        const imgElement = event.target; // 클릭된 이미지 요소
+        const imageSrc = imgElement.src; // 이미지 소스에서 파일명만 추출
+        //console.log(imageSrc);
+        if (selectedImages.includes(imageSrc)) {
+            selectedImages = selectedImages.filter(src => src !== imageSrc); // 배열에서 이미지 소스 제거
+            imgElement.classList.remove('selected'); // 테두리 제거
+        } else {
+            selectedImages.push(imageSrc); // 배열에 이미지 소스 추가
+            imgElement.classList.add('selected'); // 테두리 추가
+        }
+        console.log('선택된 배열: ', selectedImages); 
+    };
+    
+    function checkImages(event) {
+        if (selectedImages.some(i=>["http://127.0.0.1:5503/%EB%85%B8%EC%95%BD%EC%9E%90.png","http://127.0.0.1:5503/%EA%B8%B0%EC%B0%A8.png","http://127.0.0.1:5503/%EB%82%A8%EB%85%80.png"].includes(i))===true) {
+            alert("틀린 사진이 있습니다.")
+            }else if (selectedImages.length===0) {                                                                                       
+                alert('사진을 선택해주세요');//사진이 선택 되지 않았을 때
+                }else{
+                    alert("맞았습니다.")
+                    const imageContainer = document.getElementById("imageContainer");
+                    imageContainer.innerHTML = ''; // 이미지 초기화 
+                    selectedImages = []; // 선택한 이미지 배열 초기화
+        }            
+    };
+
+
+
+    $button1.addEventListener('click', startRadomDisplay);
+    $button2.addEventListener('click', checkImages);
+</script>
+</html>
